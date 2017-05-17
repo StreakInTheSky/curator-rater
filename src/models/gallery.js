@@ -10,7 +10,7 @@ const GallerySchema = new Schema({
   user: { type: ObjectId, ref: 'user' },
   created_at: Date,
   updated_at: Date,
-  favorited_by: [{ type: ObjectId, ref: 'image' }]
+  favorited_by: [{ type: ObjectId, ref: 'user' }]
 })
 
 GallerySchema.methods.apiRepr = function () {
@@ -25,6 +25,14 @@ GallerySchema.methods.apiRepr = function () {
     favorited_by: this.favorited_by
   }
 }
+
+GallerySchema.pre('remove', next => {
+  const Image = mongoose.model('image')
+
+  // When you delete a user, delete all associated images
+  Image.remove({ _id: { $in: this.images } })
+    .then(() => next())
+})
 
 const Gallery = mongoose.model('gallery', GallerySchema)
 

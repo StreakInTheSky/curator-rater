@@ -26,6 +26,14 @@ UserSchema.methods.apiRepr = function () {
   }
 }
 
+UserSchema.pre('remove', next => {
+  const Gallery = mongoose.model('gallery')
+
+  // When you delete a user, delete all associated galleries
+  Gallery.remove({ _id: { $in: this.galleries } })
+    .then(() => next())
+})
+
 const User = mongoose.model('user', UserSchema)
 
 module.exports = User
