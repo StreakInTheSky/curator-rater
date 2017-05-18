@@ -26,12 +26,13 @@ GallerySchema.methods.apiRepr = (() => {
   }
 })
 
-GallerySchema.pre('remove', next => {
+GallerySchema.pre('remove', function pre(next) {
   const Image = mongoose.model('image')
 
-  // When you delete a user, delete all associated images
+  // When you delete a gallery, delete all associated images
   Image.remove({ _id: { $in: this.images } })
     .then(() => next())
+    .catch(error => next(error))
 })
 
 const Gallery = mongoose.model('gallery', GallerySchema)
