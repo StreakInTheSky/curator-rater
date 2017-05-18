@@ -1,4 +1,5 @@
 require('chai').should()
+const expect = require('chai').expect
 const Gallery = require('../../src/models/gallery')
 const User = require('../../src/models/user')
 
@@ -31,6 +32,24 @@ describe('Gallery model', () => {
         testGallery.title.should.not.equal('Babies')
         gallery.title.should.equal('Babies')
         done()
+      })
+      .catch(error => done(error))
+  })
+
+  it('should delete a gallery and all its images', (done) => {
+    Gallery
+      .findById(testGallery._id)
+      .then(gallery => {
+        gallery
+          .remove()
+          .then(() => {
+            Gallery
+              .findById(testGallery._id)
+              .then(res => {
+                expect(res).to.be.null
+                done()
+              })
+          })
       })
       .catch(error => done(error))
   })

@@ -1,4 +1,5 @@
 require('chai').should()
+const expect = require('chai').expect
 const Image = require('../../src/models/image')
 const Gallery = require('../../src/models/gallery')
 const User = require('../../src/models/user')
@@ -38,6 +39,24 @@ describe('Image model', () => {
         testImage.should.not.equal('Google')
         image.source.should.equal('Google')
         done()
+      })
+      .catch(error => done(error))
+  })
+
+  it('should delete an image', (done) => {
+    Image
+      .findById(testImage._id)
+      .then(image => {
+        image
+          .remove()
+          .then(() => {
+            Image
+              .findById(testImage._id)
+              .then(res => {
+                expect(res).to.be.null
+                done()
+              })
+          })
       })
       .catch(error => done(error))
   })

@@ -45,19 +45,19 @@ describe('User model', () => {
   })
   it('should delete a user and all its relationships', (done) => {
     User
-    .findById(userOne._id)
-    .then(user => {
-      user
-      .remove()
-      .then(() => {
-        User
-        .findById(userOne._id)
-        .then(user => {
-          expect(user).to.be.null
-          done()
-        })
+      .findById(userOne._id)
+      .then(user => {
+        user
+          .remove()
+          .then(() => {
+            User
+              .findById(userOne._id)
+              .then(res => {
+                expect(res).to.be.null
+                done()
+              })
+          })
       })
-    })
-    .catch(error => done(error))
+      .catch(error => done(error))
   })
 })

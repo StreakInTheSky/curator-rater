@@ -1,4 +1,5 @@
 require('chai').should()
+const expect = require('chai').expect
 const Notification = require('../../src/models/notification')
 const User = require('../../src/models/user')
 
@@ -28,12 +29,26 @@ describe('Notification model', () => {
       .catch(error => done(error))
   })
 
-  it('should mark notification as read', (done) => {
+  it('should update notification as read', (done) => {
     Notification.findByIdAndUpdate(notificationOne._id, { is_new: false }, { new: true })
       .then((notice) => {
         notice.is_new.should.equal(false)
         done()
       })
       .catch(error => done(error))
+  })
+
+  it('should delete a notification', (done) => {
+    Notification
+      .findByIdAndRemove(notificationOne._id)
+      .then(() => {
+        Notification
+          .findById(notificationOne._id)
+          .then(notification => {
+            expect(notification).to.be.null
+            done()
+          })
+      })
+    .catch(error => done(error))
   })
 })
