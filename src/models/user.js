@@ -26,12 +26,23 @@ UserSchema.methods.apiRepr = (() => {
   }
 })
 
-UserSchema.pre('remove', next => {
+UserSchema.pre('remove', function removeAssociations(next) {
   const Gallery = mongoose.model('gallery')
 
-  // When you delete a user, delete all associated galleries
-  Gallery.remove({ _id: { $in: this.galleries } })
+  // When a user is deleted, delete all associated galleries
+  Gallery.find({ _id: { $in: this.galleries } })
+    .then((galleries) => Promise.all(galleries.map(gallery => gallery.remove())))
+    .then(() => {
+      // deletes from Gallery's favorited by lists
+      Gallery.update(
+        {},
+        { $pull: { favorited_by: { $in: [this._id] } } },
+        { multi: true }
+       )
+       .catch(error => next(error))
+    })
     .then(() => next())
+    .catch(error => next(error))
 })
 
 const User = mongoose.model('user', UserSchema)
