@@ -44,8 +44,8 @@ describe('Notification model', () => {
       .then(() => {
         Notification
           .findById(notificationOne._id)
-          .then(notification => {
-            expect(notification).to.be.null
+          .then(res => {
+            expect(res).to.be.null
             done()
           })
       })
