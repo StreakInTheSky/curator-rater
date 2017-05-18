@@ -13,7 +13,7 @@ const GallerySchema = new Schema({
   favorited_by: [{ type: ObjectId, ref: 'user' }]
 })
 
-GallerySchema.methods.apiRepr = function () {
+GallerySchema.methods.apiRepr = (() => {
   return {
     id: this._id,
     title: this.title,
@@ -24,7 +24,7 @@ GallerySchema.methods.apiRepr = function () {
     created_at: this.created_at,
     favorited_by: this.favorited_by
   }
-}
+})
 
 GallerySchema.pre('remove', next => {
   const Image = mongoose.model('image')

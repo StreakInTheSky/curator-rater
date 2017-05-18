@@ -15,7 +15,7 @@ const UserSchema = new Schema({
   upvoted: [{ type: ObjectId, ref: 'image' }]
 })
 
-UserSchema.methods.apiRepr = function () {
+UserSchema.methods.apiRepr = (() => {
   return {
     id: this._id,
     username: this.username,
@@ -24,7 +24,7 @@ UserSchema.methods.apiRepr = function () {
     following: this.following,
     favorites: this.favorites
   }
-}
+})
 
 UserSchema.pre('remove', next => {
   const Gallery = mongoose.model('gallery')

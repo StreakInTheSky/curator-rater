@@ -13,7 +13,7 @@ const ImageSchema = new Schema({
   updated_at: Date
 })
 
-ImageSchema.methods.apiRepr = function () {
+ImageSchema.methods.apiRepr = (() => {
   return {
     id: this._id,
     path: this.path,
@@ -24,7 +24,7 @@ ImageSchema.methods.apiRepr = function () {
     points: this.points,
     created_at: this.created_at,
   }
-}
+})
 
 const Image = mongoose.model('image', ImageSchema)
 
