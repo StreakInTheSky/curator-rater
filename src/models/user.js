@@ -33,9 +33,9 @@ UserSchema.pre('remove', function removeAssociations(next) {
   Gallery.find({ _id: { $in: this.galleries } })
     .then((galleries) => Promise.all(galleries.map(gallery => gallery.remove())))
     .then(() => {
-      // deletes from Gallery's favorited by lists
+      // deletes user from favorited galleries
       Gallery.update(
-        {},
+        { _id: this.favorites },
         { $pull: { favorited_by: { $in: [this._id] } } },
         { multi: true }
        )
