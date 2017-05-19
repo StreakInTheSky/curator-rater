@@ -6,11 +6,13 @@ const Image = require('../../src/models/image')
 
 describe('Gallery model', () => {
   let userOne
+  let userTwo
   let galleryOne
   let imageOne
 
   beforeEach(done => {
     userOne = new User({ username: 'Bill' })
+    userTwo = new User({ username: 'Bob' })
     galleryOne = new Gallery({ title: 'Birds' })
     imageOne = new Image({
       path: 'http://lorempixel.com/400/200/',
@@ -19,8 +21,11 @@ describe('Gallery model', () => {
 
     galleryOne.images = [imageOne._id]
     galleryOne.user = userOne._id
+    galleryOne.favorited_by = [userTwo._id]
 
-    Promise.all([userOne.save(), galleryOne.save(), imageOne.save()])
+    userTwo.favorites = [galleryOne._id]
+
+    Promise.all([userOne.save(), userTwo.save(), galleryOne.save(), imageOne.save()])
       .then(() => done())
       .catch(error => done(error))
   })
@@ -55,6 +60,11 @@ describe('Gallery model', () => {
         return Promise.resolve()
       })
       .then(() => Image.count())
+      .then(count => {
+        count.should.equal(0)
+        return Promise.resolve()
+      })
+      .then(() => User.find({ favorites: { $in: [userTwo._id] } }).count())
       .then(count => {
         count.should.equal(0)
         done()

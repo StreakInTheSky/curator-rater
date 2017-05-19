@@ -26,11 +26,24 @@ GallerySchema.methods.apiRepr = (() => {
   }
 })
 
-GallerySchema.pre('remove', function pre(next) {
+GallerySchema.pre('remove', function deleteImages(next) {
   const Image = mongoose.model('image')
 
   // When you delete a gallery, delete all associated images
   Image.remove({ _id: { $in: this.images } })
+    .then(() => next())
+    .catch(error => next(error))
+})
+
+GallerySchema.pre('remove', function deleteFromFavorites(next) {
+  const User = mongoose.model('user')
+
+  // When you delete a gallery, delete all associated images
+  User.update(
+      { _id: this.favorited_by },
+      { $pull: { favorites: { $in: [this._id] } } },
+      { multi: true }
+    )
     .then(() => next())
     .catch(error => next(error))
 })
