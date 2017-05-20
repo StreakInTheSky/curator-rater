@@ -25,17 +25,19 @@ describe('User model', () => {
 
 
     userOne.galleries = [galleryOne._id]
+    userOne.following = [userTwo._id]
+    userTwo.galleries = [galleryTwo._id]
+    userTwo.followers = [userOne._id]
+    userTwo.favorites = [galleryOne._id]
+    userTwo.notifications = [notificationOne._id]
     galleryOne.user = userOne._id
     galleryOne.images = [imageOne._id]
     galleryOne.favorited_by = [userTwo._id]
-    imageOne.gallery = galleryOne._id
-
-    userTwo.notifications = [notificationOne._id]
-    notificationOne.user = userTwo.id
-    userTwo.galleries = [galleryTwo._id]
-    userTwo.favorites = [galleryOne._id]
     galleryTwo.user = userTwo._id
     galleryTwo.images = [imageTwo._id]
+    imageOne.gallery = galleryOne._id
+
+    notificationOne.user = userTwo.id
     imageTwo.gallery = galleryTwo._id
 
     Promise.all([userOne.save(), userTwo.save(), galleryOne.save(), galleryTwo.save(), imageOne.save(), imageTwo.save(), notificationOne.save()])
