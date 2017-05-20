@@ -22,6 +22,7 @@ describe('Gallery model', () => {
     galleryOne.images = [imageOne._id]
     galleryOne.user = userOne._id
     galleryOne.favorited_by = [userTwo._id]
+    userOne.galleries = [galleryOne._id]
 
     userTwo.favorites = [galleryOne._id]
 
@@ -62,6 +63,11 @@ describe('Gallery model', () => {
       .then(() => Image.count())
       .then(count => {
         count.should.equal(0)
+        return Promise.resolve()
+      })
+      .then(() => User.find({ galleries: { $in: [galleryOne._id] } }))
+      .then(res => {
+        res.length.should.equal(0)
         return Promise.resolve()
       })
       .then(() => User.find({ favorites: { $in: [userTwo._id] } }).count())
