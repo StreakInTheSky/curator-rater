@@ -18,7 +18,12 @@ module.exports = {
       return res.status(400).send('passwords did not match')
     }
 
-    const user = new User(requiredFields)
+    const userProps = {
+      username: req.body.username,
+      email: req.body.email,
+      password: req.body.password
+    }
+    const user = new User(userProps)
     user.save()
       .then((savedUser) => {
         User.findById(savedUser._id)
