@@ -38,7 +38,7 @@ describe('User model', () => {
     galleryTwo.images = [imageTwo._id]
     imageTwo.gallery = galleryTwo._id
 
-    Promise.all([userOne.save(), userTwo.save(), galleryOne.save(), galleryTwo.save(), imageOne.save(), imageTwo.save()])
+    Promise.all([userOne.save(), userTwo.save(), galleryOne.save(), galleryTwo.save(), imageOne.save(), imageTwo.save(), notificationOne.save()])
       .then(() => done())
       .catch(error => done(error))
   })
