@@ -1,58 +1,10 @@
-const express = require('express')
-const mongoose = require('mongoose')
-const { PORT, DATABASE_URL } = require('./config')
-const cors = require('cors')
-const bodyParser = require('body-parser')
-const app = express()
-const systemRouter = require('./routes/system')
-mongoose.Promise = global.Promise
+require('babel-polyfill')
 
-// Listen
-let server
+import React from 'react'
+import ReactDOM  from 'react-dom'
 
-// Middleware
-app.use(bodyParser.json())
-app.use(cors())
+import PersonList from './components/person-list'
 
-// Routes
-systemRouter(app)
-
-function runServer(databaseUrl = DATABASE_URL, port = PORT) {
-  return new Promise((resolve, reject) => {
-    mongoose.connect(databaseUrl, err => {
-      if (err) {
-        return reject(err)
-      }
-      server = app.listen(port, () => {
-        /* eslint-disable no-console*/
-        console.log(`Your app is listening on port ${port}`)
-        resolve()
-      })
-      .on('error', error => {
-        mongoose.disconnect()
-        reject(error)
-      })
-      return server
-    })
-  })
-}
-
-function closeServer() {
-  return mongoose.disconnect().then(() => {
-    return new Promise((resolve, reject) => {
-      console.log('Closing server')
-      server.close(err => {
-        if (err) {
-          return reject(err)
-        }
-        return resolve()
-      })
-    })
-  })
-}
-
-if (require.main === module) {
-  runServer().catch(err => console.error(err))
-}
-
-module.exports = { app, runServer, closeServer }
+document.addEventListener('DOMContentLoaded', () =>
+    ReactDOM.render(<PersonList />, document.getElementById('app'))
+)
