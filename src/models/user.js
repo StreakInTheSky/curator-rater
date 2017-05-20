@@ -26,23 +26,44 @@ UserSchema.methods.apiRepr = (() => {
   }
 })
 
-UserSchema.pre('remove', function removeAssociations(next) {
+UserSchema.pre('remove', function deleteGalleries(next) {
   const Gallery = mongoose.model('gallery')
 
-  // When a user is deleted, delete all associated galleries
   Gallery.find({ _id: { $in: this.galleries } })
     .then((galleries) => Promise.all(galleries.map(gallery => gallery.remove())))
-    .then(() => {
-      // deletes user from favorited galleries
-      Gallery.update(
-        { _id: this.favorites },
-        { $pull: { favorited_by: { $in: [this._id] } } },
-        { multi: true }
-       )
-       .catch(error => next(error))
-    })
     .then(() => next())
     .catch(error => next(error))
+})
+
+UserSchema.pre('remove', function deleteNotifications(next) {
+  const Notification = mongoose.model('notification')
+
+  Notification.find({ _id: { $in: this.notifications } })
+  .then((notifications) => Promise.all(notifications.map(notification => notification.remove())))
+  .then(() => next())
+  .catch(error => next(error))
+})
+
+UserSchema.pre('remove', function removeFromFavorites(next) {
+  const Gallery = mongoose.model('gallery')
+
+  Gallery.update(
+    { _id: this.favorites },
+    { $pull: { favorited_by: { $in: [this._id] } } },
+    { multi: true }
+   )
+   .then(() => next())
+   .catch(error => next(error))
+})
+
+UserSchema.pre('remove', function removeFromFollowerLists(next) {
+  User.update(
+    { _id: this.followers },
+    { $pull: { following: { $in: [this._id] } } },
+    { multi: true }
+  )
+  .then(() => next())
+  .catch(error => next(error))
 })
 
 const User = mongoose.model('user', UserSchema)

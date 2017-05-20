@@ -3,6 +3,7 @@ const expect = require('chai').expect
 const User = require('../../src/models/user')
 const Gallery = require('../../src/models/gallery')
 const Image = require('../../src/models/image')
+const Notification = require('../../src/models/notification')
 
 describe('User model', () => {
   let userOne
@@ -11,15 +12,17 @@ describe('User model', () => {
   let galleryTwo
   let imageOne
   let imageTwo
+  let notificationOne
 
   beforeEach(done => {
     userOne = new User({ username: 'Ross' })
-    galleryOne = new Gallery({ title: 'Dogs' })
-    imageOne = new Image({ path: 'http://lorempixel.com/400/200/', source: 'Lorem Pixel' })
-
     userTwo = new User({ username: 'Art' })
+    galleryOne = new Gallery({ title: 'Dogs' })
     galleryTwo = new Gallery({ title: 'Cats' })
+    imageOne = new Image({ path: 'http://lorempixel.com/400/200/', source: 'Lorem Pixel' })
     imageTwo = new Image({ path: 'http://lorempixel.com/400/200/', source: 'Lorem Pixel' })
+    notificationOne = new Notification({ content: 'Your image is about to expire' })
+
 
     userOne.galleries = [galleryOne._id]
     galleryOne.user = userOne._id
@@ -27,6 +30,8 @@ describe('User model', () => {
     galleryOne.favorited_by = [userTwo._id]
     imageOne.gallery = galleryOne._id
 
+    userTwo.notifications = [notificationOne._id]
+    notificationOne.user = userTwo.id
     userTwo.galleries = [galleryTwo._id]
     userTwo.favorites = [galleryOne._id]
     galleryTwo.user = userTwo._id
@@ -58,10 +63,6 @@ describe('User model', () => {
   it('should delete a user and all its relationships', (done) => {
     let userGalleries
 
-    Gallery.find({ user: { $in: userTwo._id } })
-      .then(res => { userGalleries = res })
-      .catch(error => done(error))
-
     userTwo.remove()
       .then(() => {
         User
@@ -71,7 +72,11 @@ describe('User model', () => {
           })
         return Promise.resolve()
       })
-      .then(() => Gallery.find({ user: { $in: userTwo._id } }).count())
+      .then(() => Gallery.find({ user: { $in: userTwo._id } }))
+      .then(res => {
+        userGalleries = res
+        return res.length
+      })
       .then(count => {
         count.should.equal(0)
         return Promise.resolve()
@@ -81,7 +86,16 @@ describe('User model', () => {
         count.should.equal(0)
         return Promise.resolve()
       })
+      .then(() => Notification.find({ user: { $in: userTwo.id } }).count())
+      .then(count => {
+        count.should.equal(0)
+      })
       .then(() => Gallery.find({ favorited_by: { $in: [userTwo._id] } }).count())
+      .then(count => {
+        count.should.equal(0)
+        return Promise.resolve()
+      })
+      .then(() => User.find({ following: { $in: [userTwo._id] } }).count())
       .then(count => {
         count.should.equal(0)
         done()
