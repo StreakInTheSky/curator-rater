@@ -1,5 +1,5 @@
 const User = require('../models/user')
-const utils = require('../utilities/user-utilities')
+const utils = require('../utilities/user_utilities')
 
 module.exports = {
   create(req, res, next) {

@@ -1,7 +1,7 @@
 require('chai').should()
 const expect = require('chai').expect
-const Notification = require('../../src/models/notification')
-const User = require('../../src/models/user')
+const Notification = require('../../server/models/notification')
+const User = require('../../server/models/user')
 
 describe('Notification model', () => {
   let testUser

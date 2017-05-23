@@ -1,8 +1,8 @@
 require('chai').should()
 const expect = require('chai').expect
-const Image = require('../../src/models/image')
-const Gallery = require('../../src/models/gallery')
-const User = require('../../src/models/user')
+const Image = require('../../server/models/image')
+const Gallery = require('../../server/models/gallery')
+const User = require('../../server/models/user')
 
 describe('Image model', () => {
   let testUser
