@@ -17,7 +17,7 @@ const UserSchema = new Schema({
   upvoted: [{ type: ObjectId, ref: 'image' }]
 })
 
-UserSchema.methods.apiRepr = (() => {
+UserSchema.methods.apiRepr = function () {
   return {
     id: this._id,
     username: this.username,
@@ -26,7 +26,7 @@ UserSchema.methods.apiRepr = (() => {
     following: this.following,
     favorites: this.favorites
   }
-})
+}
 
 UserSchema.methods.validatePassword = function (password) {
   return bcrypt
