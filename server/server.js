@@ -4,7 +4,7 @@ const { PORT, DATABASE_URL } = require('./config')
 const cors = require('cors')
 const bodyParser = require('body-parser')
 const app = express()
-const systemRouter = require('./routes/system')
+const routes = require('./routes')
 mongoose.Promise = global.Promise
 
 // Listen
@@ -15,7 +15,14 @@ app.use(bodyParser.json())
 app.use(cors())
 
 // Routes
-systemRouter(app)
+routes(app)
+
+// Middleware to handle error responses
+app.use((err, req, res, next) => {
+  console.log('Error: ', err)
+  res.status(422).json({ error: err.message })
+  next()
+})
 
 function runServer(databaseUrl = DATABASE_URL, port = PORT) {
   return new Promise((resolve, reject) => {
