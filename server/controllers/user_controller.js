@@ -91,10 +91,53 @@ module.exports = {
     if (req.params.username) {
       return User
         .findOne({ username: req.params.username })
+        .populate(['followers', 'following'])
         .then(user => res.status(200).json(user.apiRepr()))
         .catch(next)
     }
     return next(new Error('please supply username'))
+  },
+  follow(req, res, next) {
+    const requiredFields = ['followerId', 'followingId']
+
+    requiredFields.forEach(field => {
+      if (!(field in req.body)) {
+        const message = `Missing \`${field}\` in request body`
+        console.error(message)
+        return res.status(400).send(message)
+      }
+      return null
+    })
+
+    const { followerId, followingId } = req.body
+
+    Promise.all([
+      User.findByIdAndUpdate(followerId, { $addToSet: { following: followingId } }, { new: true }),
+      User.findByIdAndUpdate(followingId, { $addToSet: { followers: followerId } }, { new: true })
+    ])
+      .then(users => res.json(users.map(user => user.apiRepr())))
+      .catch(error => next(error))
+  },
+  unfollow(req, res, next) {
+    const requiredFields = ['followerId', 'followingId']
+
+    requiredFields.forEach(field => {
+      if (!(field in req.body)) {
+        const message = `Missing \`${field}\` in request body`
+        console.error(message)
+        return res.status(400).send(message)
+      }
+      return null
+    })
+
+    const { followerId, followingId } = req.body
+
+    Promise.all([
+      User.findByIdAndUpdate(followerId, { $pull: { following: followingId } }, { new: true }),
+      User.findByIdAndUpdate(followingId, { $pull: { followers: followerId } }, { new: true })
+    ])
+      .then(users => res.json(users.map(user => user.apiRepr())))
+      .catch(error => next(error))
   },
   update(req, res, next) {
     let toUpdate = {}
