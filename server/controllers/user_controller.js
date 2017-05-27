@@ -1,8 +1,10 @@
 const User = require('../models/user')
-// const utils = require('../utilities/user_utilities')
+const utils = require('../utilities/user_utilities')
 
 module.exports = {
   create(req, res, next) {
+    console.log(req.body)
+
     if (!req.body) {
       return res.status(400).send('No request body')
     }
@@ -83,6 +85,41 @@ module.exports = {
     return User
       .find({})
       .then(users => res.status(200).json(users.map(user => user.apiRepr())))
+      .catch(next)
+  },
+  getOne(req, res, next) {
+    if (req.params.username) {
+      return User
+        .findOne({ username: req.params.username })
+        .then(user => res.status(200).json(user.apiRepr()))
+        .catch(next)
+    }
+    return next(new Error('please supply username'))
+  },
+  update(req, res, next) {
+    let toUpdate = {}
+
+    if (!req.body) {
+      return res.status(400).send('No request body')
+    }
+
+    const updatableFields = ['username', 'email', 'favorites', 'password', 'passwordConfirm', 'galleries', 'followers', 'following', 'favorites', 'notifications', 'upvoted']
+
+    updatableFields.forEach(field => {
+      if (field in req.body) {
+        toUpdate[field] = req.body[field]
+      }
+    })
+
+    if (req.body.hasOwnProperty('password')) {
+      if (!(utils.passwordsMatch(req.body.password, req.body.passwordConfirm))) {
+        return res.status(422).send('Passwords do not match')
+      }
+    }
+
+    return User
+      .update({ _id: req.params.userid }, req.body)
+      .then(user => res.status(201).json(user.apiRepr()))
       .catch(next)
   }
 }
