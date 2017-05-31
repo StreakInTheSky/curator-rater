@@ -91,7 +91,8 @@ module.exports = {
     if (req.params.username) {
       return User
         .findOne({ username: req.params.username })
-        .populate(['followers', 'following'])
+        .populate('followers', ['username'])
+        .populate('following', ['username'])
         .then(user => res.status(200).json(user.apiRepr()))
         .catch(next)
     }
