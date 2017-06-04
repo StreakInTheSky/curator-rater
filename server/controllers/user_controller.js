@@ -3,7 +3,6 @@ const utils = require('../utilities/user_utilities')
 
 module.exports = {
   create(req, res, next) {
-    console.log(req.body)
 
     if (!req.body) {
       return res.status(400).send('No request body')
@@ -20,42 +19,11 @@ module.exports = {
       return null
     })
 
-    let { username, email, password, passwordConfirm } = req.body
-
-    if (typeof username !== 'string') {
-      return res.status(422).send('Incorrect field type: username')
+    if (!utils.validateUser(req, res)) {
+      return next('Validation error')
     }
 
-    username = username.trim()
-
-    if (username === '') {
-      return res.status(422).send('Incorrect field length: username')
-    }
-
-    if (typeof email !== 'string') {
-      return res.status(422).send('Incorrect field type: email')
-    }
-
-    email = email.trim()
-
-    if (email === '') {
-      return res.status(422).send('Incorrect field length: email')
-    }
-
-    if (typeof password !== 'string') {
-      return res.status(422).send('Incorrect field type: password')
-    }
-
-    password = password.trim()
-    passwordConfirm = passwordConfirm.trim()
-
-    if (password === '') {
-      return res.status(422).send('Incorrect field length: password')
-    }
-
-    if (!(password === passwordConfirm)) {
-      return res.status(422).send('passwords do not match')
-    }
+    var { username, email, password, passwordConfirm } = req.body
 
     // check for existing user
     return User
@@ -147,7 +115,7 @@ module.exports = {
       return res.status(400).send('No request body')
     }
 
-    const updatableFields = ['username', 'email', 'favorites', 'password', 'passwordConfirm', 'galleries', 'followers', 'following', 'favorites', 'notifications', 'upvoted']
+    const updatableFields = ['username', 'email', 'password', 'passwordConfirm']
 
     updatableFields.forEach(field => {
       if (field in req.body) {
@@ -155,14 +123,12 @@ module.exports = {
       }
     })
 
-    if (req.body.hasOwnProperty('password')) {
-      if (!(utils.passwordsMatch(req.body.password, req.body.passwordConfirm))) {
-        return res.status(422).send('Passwords do not match')
-      }
+    if (!utils.validateUser(req, res)) {
+      return next('Validation error')
     }
 
     return User
-      .update({ _id: req.params.userid }, req.body)
+      .findByIdAndUpdate(req.params.userid, toUpdate)
       .then(user => res.status(201).json(user.apiRepr()))
       .catch(next)
   }
