@@ -1,13 +1,11 @@
 const mongoose = require('mongoose')
-mongoose.Promise = global.Promise;
+mongoose.Promise = global.Promise
 
-before((done) => {
-  mongoose.connect('mongodb://localhost/spacetraders_test')
-  mongoose.connection
-    .once('open', () => { done() })
-    .on('error', (error) => {
-      console.warn('Warning', error)
-    })
+const { runServer, closeServer } = require('../server/server')
+const { TEST_DATABASE_URL } = require('../server/config')
+
+before(() => {
+  return runServer(TEST_DATABASE_URL)
 })
 
 beforeEach((done) => {
@@ -25,5 +23,8 @@ beforeEach((done) => {
   collectionKeys.forEach((collection) => {
     mongoose.connection.db.dropCollection(collection, (err, result) => { check() })
   })
+})
 
+after(() => {
+  return closeServer()
 })
