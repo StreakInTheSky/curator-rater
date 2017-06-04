@@ -9,4 +9,5 @@ module.exports = (app) => {
   app.post(`${apiUrl}/follow`, UserController.follow)
   app.post(`${apiUrl}/unfollow`, UserController.unfollow)
   app.put(`${apiUrl}/:userid`, UserController.update)
+  app.delete(`${apiUrl}/:userid`, UserController.delete)
 }

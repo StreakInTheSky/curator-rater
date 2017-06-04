@@ -23,7 +23,7 @@ module.exports = {
       return next('Validation error')
     }
 
-    var { username, email, password, passwordConfirm } = req.body
+    const { username, email, password } = req.body
 
     // check for existing user
     return User
@@ -39,8 +39,8 @@ module.exports = {
       })
       .then(hash => {
         return User.create({
-          username: username,
-          email: email,
+          username,
+          email,
           password: hash
         })
       })
@@ -130,6 +130,12 @@ module.exports = {
     return User
       .findByIdAndUpdate(req.params.userid, toUpdate)
       .then(user => res.status(201).json(user.apiRepr()))
+      .catch(next)
+  },
+  delete(req, res, next) {
+    User
+      .findByIdAndRemove(req.params.userid)
+      .then(() => res.status(204).end())
       .catch(next)
   }
 }
