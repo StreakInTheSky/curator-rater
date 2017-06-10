@@ -1,8 +1,6 @@
 const Horseman = require('node-horseman')
 const cheerio = require('cheerio')
 
-const horseman = new Horseman()
-
 const fetchImages = rawHtml => {
   const $ = cheerio.load(rawHtml)
   const images = $('main header').siblings('div').find('img').map(function image() {
@@ -15,8 +13,9 @@ const fetchImages = rawHtml => {
   return images
 }
 
-const searchByUser = (username) => {
-  return horseman
+const searchByUser = (username, next) => {
+  return new Horseman()
+    .userAgent('Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/49.0.2623.75 Safari/537.36')
     .open(`https://www.instagram.com/${username}`)
     .click('a:contains("Load")')
     .wait(1000)
@@ -42,11 +41,13 @@ const searchByUser = (username) => {
     .wait(1000)
     .html()
     .then(fetchImages)
+    .catch(error => next(error))
     .close()
 }
 
-const searchByTag = hashtag => {
-  return horseman
+const searchByTag = (hashtag, next) => {
+  return new Horseman()
+    .userAgent('Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/49.0.2623.75 Safari/537.36')
     .open(`https://www.instagram.com/explore/tags/${hashtag}`)
     .click('a:contains("Load")')
     .wait(1000)
@@ -72,6 +73,7 @@ const searchByTag = hashtag => {
     .wait(1000)
     .html()
     .then(fetchImages)
+    .catch(error => next(error))
     .close()
 }
 
