@@ -17,6 +17,7 @@
     "body-parser": "^1.17.1",
     "chai": "^3.5.0",
     "chai-http": "^3.0.0",
+    "cheerio": "^1.0.0-rc.1",
     "cors": "^2.8.3",
     "eslint": "^2.11.1",
     "eslint-config-airbnb": "^9.0.1",
@@ -27,7 +28,9 @@
     "express": "^4.15.2",
     "mocha": "^3.3.0",
     "mongoose": "^4.9.8",
+    "node-horseman": "^3.3.0",
     "nodemon": "^1.11.0",
+    "phantomjs-prebuilt": "^2.1.14",
     "request": "^2.81.0"
   }
 }

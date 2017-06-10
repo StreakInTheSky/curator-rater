@@ -17,6 +17,7 @@ module.exports = (app) => {
 
   const apiFetch = '/api/fetch'
   app.get(`${apiFetch}/image-url`, FetchController.fetchUrl)
+  app.get(`${apiFetch}/instagram`, FetchController.fetchInstagram)
 
   // // Gallery routes
   // const apiGallery = '/api/gallery'
