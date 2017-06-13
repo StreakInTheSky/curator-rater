@@ -4,14 +4,14 @@ const utils = require('../utilities/user_utilities')
 module.exports = {
   create(req, res, next) {
 
-    if (!req.body) {
+    if (!req.body.data) {
       return res.status(400).send('No request body')
     }
 
     const requiredFields = ['username', 'email', 'password', 'passwordConfirm']
 
     requiredFields.forEach(field => {
-      if (!(field in req.body)) {
+      if (!(field in req.body.data)) {
         const message = `Missing \`${field}\` in request body`
         console.error(message)
         return res.status(400).send(message)
@@ -23,7 +23,7 @@ module.exports = {
       return next('Validation error')
     }
 
-    const { username, email, password } = req.body
+    const { username, email, password } = req.body.data
 
     // check for existing user
     return User

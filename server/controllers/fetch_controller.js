@@ -1,5 +1,5 @@
 const request = require('request')
-const { searchByUser, searchByTag } = require('../utilities/fetch_instagram')
+const fetchInstagram = require('../utilities/fetch_instagram')
 
 module.exports = {
   fetchUrl(req, res, next) {
@@ -12,9 +12,9 @@ module.exports = {
   fetchInstagram(req, res, next) {
     const fetch = new Promise((resolve, reject) => {
       if (req.query.username) {
-        resolve(searchByUser(req.query.username, next))
+        resolve(fetchInstagram(req.query.username, false, next))
       } else if (req.query.tag) {
-        resolve(searchByTag(req.query.tag, next))
+        resolve(fetchInstagram(req.query.tag, true, next))
       } else {
         reject('invalid search')
       }
