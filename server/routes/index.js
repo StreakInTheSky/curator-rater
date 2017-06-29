@@ -1,7 +1,7 @@
 const UserController = require('../controllers/user_controller')
 const FetchController = require('../controllers/fetch_controller')
-// const GalleryController = require('../controllers/gallery_controller')
-// const PhotoController = require('../controllers/photo_controller')
+const GalleryController = require('../controllers/gallery_controller')
+const ImageController = require('../controllers/image_controller')
 // const NotificationController = require('../controllers/notification_controller')
 
 module.exports = (app) => {
@@ -19,22 +19,23 @@ module.exports = (app) => {
   app.get(`${apiFetch}/image-url`, FetchController.fetchUrl)
   app.get(`${apiFetch}/instagram`, FetchController.fetchInstagram)
 
-  // // Gallery routes
-  // const apiGallery = '/api/gallery'
-  // app.get(apiGallery, GalleryController.get)
-  // app.get(`${apiGallery}/:galleryId`, GalleryController.getOne)
-  // app.post(apiGallery, GalleryController.create)
+  // Gallery routes
+  const apiGallery = '/api/gallery'
+  app.get(apiGallery, GalleryController.getByQuery)
+  app.get(`${apiGallery}/:galleryId`, GalleryController.getOne)
+  app.post(apiGallery, GalleryController.create)
   // app.post(`${apiGallery}/:galleryId/favorite`, GalleryController.addFavorite)
-  // app.put(`${apiGallery}/:galleryId`, GalleryController.update)
-  // app.delete(`${apiGallery}/:galleryId`, GalleryController.delete)
-  //
-  // // Photo routes
-  // const apiPhoto = '/api/photo'
-  // app.get(apiPhoto, PhotoController.get)
-  // app.get(`${apiPhoto}/:photoId`, PhotoController.getOne)
-  // app.post(`${apiPhoto}/:photoId/vote`, PhotoController.vote)
-  // app.delete(`${apiPhoto}/:photoId`, PhotoController.delete)
-  //
+  app.put(`${apiGallery}/:galleryId`, GalleryController.update)
+  app.delete(`${apiGallery}/:galleryId`, GalleryController.delete)
+
+  // Image routes
+  const apiImage = '/api/image'
+  app.post(`${apiImage}/`, ImageController.create)
+  // app.get(apiImage, ImageController.get)
+  // app.get(`${apiImage}/:imageId`, ImageController.getOne)
+  // app.post(`${apiImage}/:imageId/vote`, ImageController.vote)
+  // app.delete(`${apiImage}/:imageId`, ImageController.delete)
+
   // // Notification routes
   // const apiNotification = '/api/notification'
   // app.put(`${apiNotification}/:notificationId`, NotificationController.markRead)

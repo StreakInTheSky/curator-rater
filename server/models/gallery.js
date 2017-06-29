@@ -13,7 +13,7 @@ const GallerySchema = new Schema({
   favorited_by: [{ type: ObjectId, ref: 'user' }]
 })
 
-GallerySchema.methods.apiRepr = (() => {
+GallerySchema.methods.apiRepr = function () {
   return {
     id: this._id,
     title: this.title,
@@ -24,7 +24,7 @@ GallerySchema.methods.apiRepr = (() => {
     created_at: this.created_at,
     favorited_by: this.favorited_by
   }
-})
+}
 
 GallerySchema.pre('remove', function deleteImages(next) {
   const Image = mongoose.model('image')
@@ -52,6 +52,17 @@ GallerySchema.pre('remove', function deleteFromUserGalleries(next) {
   User.update(
       { galleries: { _id: this._id } },
       { $pull: { galleries: { $in: [this._id] } } }
+    )
+    .then(() => next())
+    .catch(error => next(error))
+})
+
+GallerySchema.post('save', function saveGalleryToUser(next) {
+  const User = mongoose.model('user')
+
+  User.update(
+      { _id: this.user },
+      { $push: { galleries: this._id } }
     )
     .then(() => next())
     .catch(error => next(error))

@@ -13,7 +13,7 @@ const ImageSchema = new Schema({
   updated_at: Date
 })
 
-ImageSchema.methods.apiRepr = (() => {
+ImageSchema.methods.apiRepr = function () {
   return {
     id: this._id,
     path: this.path,
@@ -24,6 +24,17 @@ ImageSchema.methods.apiRepr = (() => {
     points: this.points,
     created_at: this.created_at,
   }
+}
+
+ImageSchema.post('save', function saveImagestoGallery(next) {
+  const Gallery = mongoose.model('gallery')
+
+  Gallery.update(
+      { _id: this.gallery },
+      { $push: { images: this._id } }
+    )
+    .then(() => next())
+    .catch(error => next(error))
 })
 
 const Image = mongoose.model('image', ImageSchema)
