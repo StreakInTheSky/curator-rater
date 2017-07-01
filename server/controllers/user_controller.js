@@ -60,6 +60,13 @@ module.exports = {
         .findOne({ username: req.params.username })
         .populate('followers', ['username'])
         .populate('following', ['username'])
+        .populate({
+          path: 'galleries',
+          populate: {
+            path: 'images',
+            model: 'image'
+          }
+        })
         .then(user => res.status(200).json(user.apiRepr()))
         .catch(next)
     }
