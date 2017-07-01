@@ -2,10 +2,10 @@ const mongoose = require('mongoose')
 mongoose.Promise = global.Promise
 
 const { runServer, closeServer } = require('../server/server')
-const { TEST_DATABASE_URL } = require('../server/config')
+const { DATABASE_URL_TEST, PORT } = require('../server/config')
 
 before(() => {
-  return runServer(TEST_DATABASE_URL)
+  return runServer(DATABASE_URL_TEST, PORT)
 })
 
 beforeEach((done) => {
