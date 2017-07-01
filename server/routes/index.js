@@ -7,8 +7,9 @@ const ImageController = require('../controllers/image_controller')
 module.exports = (app) => {
   // User routes
   const apiUser = '/api/user'
-  app.get(apiUser, UserController.getAll)
+  app.get(apiUser, UserController.getByQuery)
   app.get(`${apiUser}/:username`, UserController.getOne)
+  // app.get(`${apiUser}/:userid`, UserController.getOneById)
   app.post(apiUser, UserController.create)
   app.post(`${apiUser}/follow`, UserController.follow)
   app.post(`${apiUser}/unfollow`, UserController.unfollow)
@@ -25,6 +26,7 @@ module.exports = (app) => {
   app.get(`${apiGallery}/:galleryId`, GalleryController.getOne)
   app.post(apiGallery, GalleryController.create)
   // app.post(`${apiGallery}/:galleryId/favorite`, GalleryController.addFavorite)
+  // app.post(`${apiGallery}/:galleryId/unfavorite`, GalleryController.removeFavorite)
   app.put(`${apiGallery}/:galleryId`, GalleryController.update)
   app.delete(`${apiGallery}/:galleryId`, GalleryController.delete)
 

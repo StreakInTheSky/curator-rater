@@ -31,13 +31,13 @@ UserSchema.methods.apiRepr = function () {
 UserSchema.methods.validatePassword = function (password) {
   return bcrypt
     .compare(password, this.password)
-    .then(isValid => isValid);
+    .then(isValid => isValid)
 }
 
 UserSchema.statics.hashPassword = function (password) {
   return bcrypt
     .hash(password, 10)
-    .then(hash => hash);
+    .then(hash => hash)
 }
 
 UserSchema.pre('remove', function deleteGalleries(next) {

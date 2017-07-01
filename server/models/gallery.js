@@ -1,3 +1,5 @@
+/*eslint-disable func-names*/
+
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 const { ObjectId } = Schema.Types
@@ -26,7 +28,7 @@ GallerySchema.methods.apiRepr = function () {
   }
 }
 
-GallerySchema.pre('remove', function deleteImages(next) {
+GallerySchema.pre('remove', function (next) {
   const Image = mongoose.model('image')
 
   Image.remove({ _id: { $in: this.images } })
@@ -34,7 +36,7 @@ GallerySchema.pre('remove', function deleteImages(next) {
     .catch(error => next(error))
 })
 
-GallerySchema.pre('remove', function deleteFromFavorites(next) {
+GallerySchema.pre('remove', function (next) {
   const User = mongoose.model('user')
 
   User.update(
@@ -46,7 +48,7 @@ GallerySchema.pre('remove', function deleteFromFavorites(next) {
     .catch(error => next(error))
 })
 
-GallerySchema.pre('remove', function deleteFromUserGalleries(next) {
+GallerySchema.pre('remove', function (next) {
   const User = mongoose.model('user')
 
   User.update(
@@ -57,7 +59,7 @@ GallerySchema.pre('remove', function deleteFromUserGalleries(next) {
     .catch(error => next(error))
 })
 
-GallerySchema.post('save', function saveGalleryToUser(next) {
+GallerySchema.post('save', function (next) {
   const User = mongoose.model('user')
 
   User.update(

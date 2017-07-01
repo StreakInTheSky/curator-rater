@@ -58,7 +58,7 @@ describe('User controller', () => {
     User.count().then(count => {
       chai.request(app)
         .post('/api/user')
-        .send(newUser)
+        .send({ data: newUser })
         .end((err) => {
           if (err) { return done(err) }
           return User.count()

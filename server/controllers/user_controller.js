@@ -3,8 +3,7 @@ const utils = require('../utilities/user_utilities')
 
 module.exports = {
   create(req, res, next) {
-
-    if (!req.body.data) {
+    if (!req.body) {
       return res.status(400).send('No request body')
     }
 
@@ -49,9 +48,9 @@ module.exports = {
       })
       .catch(next)
   },
-  getAll(req, res, next) {
+  getByQuery(req, res, next) {
     return User
-      .find({})
+      .find(req.params)
       .then(users => res.status(200).json(users.map(user => user.apiRepr())))
       .catch(next)
   },
@@ -66,6 +65,17 @@ module.exports = {
     }
     return next(new Error('please supply username'))
   },
+  // getOne(req, res, next) {
+  //   if (req.params.userId) {
+  //     return User
+  //       .findOne({ username: req.params.username })
+  //       .populate('followers', ['username'])
+  //       .populate('following', ['username'])
+  //       .then(user => res.status(200).json(user.apiRepr()))
+  //       .catch(next)
+  //   }
+  //   return next(new Error('please supply username'))
+  // },
   follow(req, res, next) {
     const requiredFields = ['followerId', 'followingId']
 
@@ -134,7 +144,7 @@ module.exports = {
   },
   delete(req, res, next) {
     User
-      .findByIdAndRemove(req.params.userid)
+      .remove({ _id: req.params.userid})
       .then(() => res.status(204).end())
       .catch(next)
   }

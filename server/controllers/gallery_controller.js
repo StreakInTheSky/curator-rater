@@ -24,8 +24,6 @@ module.exports = {
 
     const { user, title, description } = req.body.data
 
-    // Create Gallery then add images to Gallery
-
     return Gallery
       .create({
         user,
@@ -78,7 +76,7 @@ module.exports = {
   },
   delete(req, res, next) {
     Gallery
-      .findByIdAndRemove(req.params.galleryid)
+      .remove({ _id: req.params.galleryid })
       .then(() => res.status(204).end())
       .catch(next)
   }
