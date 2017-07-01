@@ -26,21 +26,20 @@ app.use((err, req, res, next) => {
 
 function runServer(databaseUrl = DATABASE_URL, port = PORT) {
   return new Promise((resolve, reject) => {
-    mongoose.connect(databaseUrl, err => {
-      if (err) {
-        return reject(err)
-      }
-      server = app.listen(port, () => {
-        /* eslint-disable no-console*/
-        console.log(`Your app is listening on port ${port}`)
-        resolve()
+    mongoose.connect(databaseUrl, { useMongoClient: false })
+      .then(() => {
+        server = app.listen(port, () => {
+          /* eslint-disable no-console*/
+          console.log(`Your app is listening on port ${port}`)
+          resolve()
+        })
+        .on('error', error => {
+          mongoose.disconnect()
+          reject(error)
+        })
+        return server
       })
-      .on('error', error => {
-        mongoose.disconnect()
-        reject(error)
-      })
-      return server
-    })
+      .catch(err => reject(err))
   })
 }
 
