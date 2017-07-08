@@ -38,6 +38,8 @@ module.exports = {
   getByQuery(req, res, next) {
     return Gallery
       .find(req.params)
+      .populate('user', ['username'])
+      .populate('images')
       .then(galleries => res.status(200).json(galleries.map(gallery => gallery.apiRepr())))
       .catch(next)
   },
@@ -76,7 +78,10 @@ module.exports = {
   },
   delete(req, res, next) {
     Gallery
-      .remove({ _id: req.params.galleryid })
+      .findById(req.params.galleryId)
+      .then(gallery => {
+        return gallery.remove()
+      })
       .then(() => res.status(204).end())
       .catch(next)
   }

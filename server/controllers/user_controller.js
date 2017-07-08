@@ -145,13 +145,16 @@ module.exports = {
     }
 
     return User
-      .findByIdAndUpdate(req.params.userid, toUpdate)
+      .findByIdAndUpdate(req.params.userId, toUpdate)
       .then(user => res.status(201).json(user.apiRepr()))
       .catch(next)
   },
   delete(req, res, next) {
     User
-      .remove({ _id: req.params.userid})
+      .findById(req.params.userId)
+      .then(user => {
+        return user.remove()
+      })
       .then(() => res.status(204).end())
       .catch(next)
   }

@@ -9,12 +9,12 @@ module.exports = (app) => {
   const apiUser = '/api/user'
   app.get(apiUser, UserController.getByQuery)
   app.get(`${apiUser}/:username`, UserController.getOne)
-  // app.get(`${apiUser}/:userid`, UserController.getOneById)
+  // app.get(`${apiUser}/:userId`, UserController.getOneById)
   app.post(apiUser, UserController.create)
   app.post(`${apiUser}/follow`, UserController.follow)
   app.post(`${apiUser}/unfollow`, UserController.unfollow)
-  app.put(`${apiUser}/:userid`, UserController.update)
-  app.delete(`${apiUser}/:userid`, UserController.delete)
+  app.put(`${apiUser}/:userId`, UserController.update)
+  app.delete(`${apiUser}/:userId`, UserController.delete)
 
   const apiFetch = '/api/fetch'
   app.get(`${apiFetch}/image-url`, FetchController.fetchUrl)
