@@ -45,7 +45,30 @@ describe('Gallery Controller', () => {
         done()
       })
   })
-  it('handles a DELETE request to /api/gallery/:id', (done) => {
+  it('should create a new gallery for a user', done => {
+    const newGallery = {
+      title: 'New Gallery',
+      description: 'a new gallery',
+      user: user._id
+    }
+    let galleryTwo
+
+    chai.request(app)
+      .post('/api/gallery/')
+      .send({ data: newGallery })
+      .then(res => {
+        galleryTwo = res.body
+        return User.findById(user._id)
+          .catch(err => done(err))
+      })
+      .then(fetchedUser => {
+        galleryTwo.user.should.equal(fetchedUser._id.toString())
+        fetchedUser.galleries.should.include(galleryTwo.id)
+        done()
+      })
+      .catch(err => done(err))
+  })
+  it('should delete a gallery and remove it from user', (done) => {
     chai.request(app)
       .delete(`/api/gallery/${gallery._id}`)
       .end((err) => {
