@@ -59,12 +59,12 @@ GallerySchema.pre('remove', function (next) {
     .catch(error => next(error))
 })
 
-GallerySchema.post('save', function (next) {
+GallerySchema.post('save', function (doc, next) {
   const User = mongoose.model('user')
 
   User.update(
-      { _id: this.user },
-      { $push: { galleries: this._id } }
+      { _id: doc.user },
+      { $push: { galleries: doc._id } }
     )
     .then(() => next())
     .catch(error => next(error))

@@ -26,12 +26,12 @@ ImageSchema.methods.apiRepr = function () {
   }
 }
 
-ImageSchema.post('save', function saveImagestoGallery(next) {
+ImageSchema.post('save', function saveImagestoGallery(doc, next) {
   const Gallery = mongoose.model('gallery')
 
   Gallery.update(
-      { _id: this.gallery },
-      { $push: { images: this._id } }
+      { _id: doc.gallery },
+      { $push: { images: doc._id } }
     )
     .then(() => next())
     .catch(error => next(error))

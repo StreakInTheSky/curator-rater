@@ -26,7 +26,7 @@ app.use((err, req, res, next) => {
 
 function runServer(databaseUrl = DATABASE_URL, port = PORT) {
   return new Promise((resolve, reject) => {
-    mongoose.connect(databaseUrl, { useMongoClient: false })
+    mongoose.connect(databaseUrl, { useMongoClient: true })
       .then(() => {
         server = app.listen(port, () => {
           /* eslint-disable no-console*/
