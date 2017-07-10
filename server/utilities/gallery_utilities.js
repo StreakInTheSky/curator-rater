@@ -1,3 +1,5 @@
+const User = require('../../server/models/user')
+
 const validateGallery = (req, res) => {
   let toVerify = {}
 
@@ -60,4 +62,8 @@ const validateGallery = (req, res) => {
   return true
 }
 
-module.exports = { validateGallery }
+const checkUser = (userId) => {
+  return User.findById(userId)
+}
+
+module.exports = { validateGallery, checkUser }

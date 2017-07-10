@@ -2,7 +2,7 @@ const Gallery = require('../models/gallery')
 const utils = require('../utilities/gallery_utilities')
 
 module.exports = {
-  create(req, res, next) {
+  create: async (req, res, next) => {
     if (!req.body) {
       return res.status(400).send('No request body')
     }
@@ -23,6 +23,11 @@ module.exports = {
     }
 
     const { user, title, description } = req.body.data
+    const validatedUser = await utils.checkUser(user)
+    if (!validatedUser) {
+      res.status(401).send('User not found')
+      return next('User not found')
+    }
 
     return Gallery
       .create({
