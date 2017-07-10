@@ -26,8 +26,6 @@ const galleryOne = {
   description: 'Bunch of Pikachus'
 }
 
-
-
 describe('Gallery Controller', () => {
   let gallery
   let user
@@ -64,6 +62,28 @@ describe('Gallery Controller', () => {
       .then(fetchedUser => {
         galleryTwo.user.should.equal(fetchedUser._id.toString())
         fetchedUser.galleries.should.include(galleryTwo.id)
+        galleryTwo.title.should.equal(newGallery.title)
+        done()
+      })
+      .catch(err => done(err))
+  })
+  it('should update a gallery\'s details', done => {
+    const newDetails = {
+      title: 'New Title',
+      description: 'longer description'
+    }
+
+    chai.request(app)
+      .put(`/api/gallery/${gallery._id}`)
+      .send(newDetails)
+      .then(res => {
+        res.status.should.equal(201)
+
+        return Gallery.findById(gallery._id)
+      })
+      .then(fetchedGallery => {
+        fetchedGallery.title.should.equal(newDetails.title)
+        fetchedGallery.description.should.equal(newDetails.description)
         done()
       })
       .catch(err => done(err))
