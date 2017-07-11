@@ -5,8 +5,7 @@ const { ObjectId } = Schema.Types
 
 const UserSchema = new Schema({
   username: String,
-  email: String,
-  password: String,
+  uid: String,
   galleries: [{ type: ObjectId, ref: 'gallery' }],
   followers: [{ type: ObjectId, ref: 'user' }],
   following: [{ type: ObjectId, ref: 'user' }],

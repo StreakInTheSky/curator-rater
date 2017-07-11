@@ -1,10 +1,13 @@
 const UserController = require('../controllers/user_controller')
+const AuthController = require('../controllers/auth_controller')
 const FetchController = require('../controllers/fetch_controller')
 const GalleryController = require('../controllers/gallery_controller')
 const ImageController = require('../controllers/image_controller')
 // const NotificationController = require('../controllers/notification_controller')
 
 module.exports = (app) => {
+  const apiAuth = '/api/auth'
+  app.post(apiAuth, AuthController.getOrCreate)
   // User routes
   const apiUser = '/api/user'
   app.get(apiUser, UserController.getByQuery)
