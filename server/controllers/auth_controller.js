@@ -1,8 +1,10 @@
 const User = require('../models/user')
-const utils = require('../utilities/user_utilities')
+// const utils = require('../utilities/user_utilities')
 
 module.exports = {
   getOrCreate(req, res, next) {
+    // TODO: Guard against duplicate usernames
+
     if (!req.body) {
       return res.status(400).send('No request body')
     }
@@ -18,7 +20,7 @@ module.exports = {
       return null
     })
 
-    User.findOne({ uid: req.body.uid })
+    return User.findOne({ uid: req.body.uid })
       .then(user => {
         if (user) {
           return res.json(user)
