@@ -5,7 +5,8 @@ const { ObjectId } = Schema.Types
 
 const UserSchema = new Schema({
   username: String,
-  uid: String,
+  email: String,
+  password: String,
   galleries: [{ type: ObjectId, ref: 'gallery' }],
   followers: [{ type: ObjectId, ref: 'user' }],
   following: [{ type: ObjectId, ref: 'user' }],
@@ -28,15 +29,11 @@ UserSchema.methods.apiRepr = function () {
 }
 
 UserSchema.methods.validatePassword = function (password) {
-  return bcrypt
-    .compare(password, this.password)
-    .then(isValid => isValid)
+  return bcrypt.compare(password, this.password)
 }
 
 UserSchema.statics.hashPassword = function (password) {
-  return bcrypt
-    .hash(password, 10)
-    .then(hash => hash)
+  return bcrypt.hash(password, 10)
 }
 
 UserSchema.pre('remove', function deleteGalleries(next) {

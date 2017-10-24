@@ -1,24 +1,22 @@
 const UserController = require('../controllers/user_controller')
-const AuthController = require('../controllers/auth_controller')
 const FetchController = require('../controllers/fetch_controller')
 const GalleryController = require('../controllers/gallery_controller')
 const ImageController = require('../controllers/image_controller')
 // const NotificationController = require('../controllers/notification_controller')
 
 module.exports = (app) => {
-  const apiAuth = '/api/auth'
-  app.post(apiAuth, AuthController.getOrCreate)
   // User routes
   const apiUser = '/api/user'
   app.get(apiUser, UserController.getByQuery)
   app.get(`${apiUser}/:username`, UserController.getOne)
-  // app.get(`${apiUser}/:userId`, UserController.getOneById)
+  app.get(`${apiUser}/:userId`, UserController.getOneById)
   app.post(apiUser, UserController.create)
   app.post(`${apiUser}/follow`, UserController.follow)
   app.post(`${apiUser}/unfollow`, UserController.unfollow)
   app.put(`${apiUser}/:userId`, UserController.update)
   app.delete(`${apiUser}/:userId`, UserController.delete)
 
+ // Allows fetching images from internet
   const apiFetch = '/api/fetch'
   app.get(`${apiFetch}/image-url`, FetchController.fetchUrl)
   app.get(`${apiFetch}/instagram`, FetchController.fetchInstagram)
@@ -28,7 +26,7 @@ module.exports = (app) => {
   app.get(apiGallery, GalleryController.getByQuery)
   app.get(`${apiGallery}/:galleryId`, GalleryController.getOne)
   app.post(apiGallery, GalleryController.create)
-  // app.post(`${apiGallery}/:galleryId/favorite`, GalleryController.addFavorite)
+  app.post(`${apiGallery}/:galleryId/favorite`, GalleryController.addFavorite)
   // app.post(`${apiGallery}/:galleryId/unfavorite`, GalleryController.removeFavorite)
   app.put(`${apiGallery}/:galleryId`, GalleryController.update)
   app.delete(`${apiGallery}/:galleryId`, GalleryController.delete)
