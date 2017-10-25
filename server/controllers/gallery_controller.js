@@ -3,30 +3,36 @@ const utils = require('../utilities/gallery_utilities')
 
 module.exports = {
   create: async (req, res, next) => {
-    if (!req.body) {
-      return res.status(400).send('No request body')
-    }
-
     const requiredFields = ['user', 'title', 'description']
 
     requiredFields.forEach(field => {
       if (!(field in req.body.data)) {
-        const message = `Missing \`${field}\` in request body`
-        console.error(message)
-        return res.status(400).send(message)
+        return next({
+          code: 422,
+          reason: 'ValidationError',
+          message: `Missing \`${field}\` in request body`,
+          location: field
+        })
       }
       return null
     })
 
     if (!utils.validateGallery(req, res)) {
-      return next('Validation error')
+      return next({
+        code: 422,
+        reason: 'ValidationError',
+      })
     }
 
     const { user, title, description } = req.body.data
     const validatedUser = await utils.checkUser(user)
     if (!validatedUser) {
-      res.status(401).send('User not found')
-      return next('User not found')
+      return next({
+        code: 422,
+        reason: 'ValidationError',
+        message: 'User not found',
+        location: 'user'
+      })
     }
 
     return Gallery
@@ -55,14 +61,15 @@ module.exports = {
         .then(gallery => res.status(200).json(gallery.apiRepr()))
         .catch(next)
     }
-    return next(new Error('no gallery id supplied'))
+    return next({
+      code: 422,
+      reason: 'ValidationError',
+      message: 'No gallery id supplied',
+      location: 'params'
+    })
   },
   update(req, res, next) {
     let toUpdate = {}
-
-    if (!req.body) {
-      return res.status(400).send('No request body')
-    }
 
     const updatableFields = ['user', 'title', 'description', 'tags']
 
@@ -73,7 +80,10 @@ module.exports = {
     })
 
     if (!utils.validateGallery(req, res)) {
-      return next('Validation error')
+      return next({
+        code: 422,
+        reason: 'ValidationError',
+      })
     }
 
     return Gallery

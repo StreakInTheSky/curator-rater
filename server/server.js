@@ -19,8 +19,8 @@ routes(app)
 
 // Middleware to handle error responses
 app.use((err, req, res, next) => {
-  console.log('Error: ', err)
-  res.status(422).json({ error: err.message })
+  console.error('Error:', err)
+  res.status(err.code).json({ error: err.message })
   next()
 })
 

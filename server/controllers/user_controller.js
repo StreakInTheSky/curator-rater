@@ -7,7 +7,7 @@ module.exports = {
     const missingField = requiredFields.find(field => !(field in req.body))
 
     if (missingField) {
-      return res.status(422).json({
+      return next({
         code: 422,
         reason: 'ValidationError',
         message: 'Missing field',
@@ -20,7 +20,7 @@ module.exports = {
     )
 
     if (nonStringField) {
-      return res.status(422).json({
+      return next({
         code: 422,
         reason: 'ValidationError',
         message: 'Incorrect field type: expected string',
@@ -34,7 +34,7 @@ module.exports = {
     )
 
     if (nonTrimmedField) {
-      return res.status(422).json({
+      return next({
         code: 422,
         reason: 'ValidationError',
         message: 'Cannot start or end with whitespace',
@@ -69,7 +69,7 @@ module.exports = {
     )
 
     if (tooSmallField || tooLargeField) {
-      return res.status(422).json({
+      return next({
         code: 422,
         reason: 'ValidationError',
         message: tooSmallField
@@ -86,7 +86,7 @@ module.exports = {
     const emailRegX = new RegExp('^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$')
 
     if (!emailRegX.test(email)) {
-      return res.status(422).json({
+      return next({
         code: 422,
         reason: 'ValidationError',
         message: 'Not a valid email',
@@ -137,7 +137,14 @@ module.exports = {
       .then(user => {
         return res.status(201).json(user.apiRepr())
       })
-      .catch(next)
+      .catch(err => {
+        // Forward validation errors on to the client, otherwise give a 500
+        // error because something unexpected has happened
+        if (err.reason === 'ValidationError') {
+          return next(err)
+        }
+        return res.status(500).json({ code: 500, message: 'Internal server error' })
+      })
   },
   getByQuery(req, res, next) {
     return User
@@ -179,9 +186,12 @@ module.exports = {
 
     requiredFields.forEach(field => {
       if (!(field in req.body)) {
-        const message = `Missing \`${field}\` in request body`
-        console.error(message)
-        return res.status(400).send(message)
+        return next({
+          code: 422,
+          reason: 'ValidationError',
+          message: `Missing \`${field}\` in request body`,
+          location: field
+        })
       }
       return null
     })
@@ -200,9 +210,12 @@ module.exports = {
 
     requiredFields.forEach(field => {
       if (!(field in req.body)) {
-        const message = `Missing \`${field}\` in request body`
-        console.error(message)
-        return res.status(400).send(message)
+        return next({
+          code: 422,
+          reason: 'ValidationError',
+          message: `Missing \`${field}\` in request body`,
+          location: field
+        })
       }
       return null
     })
@@ -224,7 +237,7 @@ module.exports = {
     )
 
     if (nonStringField) {
-      return res.status(422).json({
+      return next({
         code: 422,
         reason: 'ValidationError',
         message: 'Incorrect field type: expected string',
@@ -238,7 +251,7 @@ module.exports = {
     )
 
     if (nonTrimmedField) {
-      return res.status(422).json({
+      return next({
         code: 422,
         reason: 'ValidationError',
         message: 'Cannot start or end with whitespace',
@@ -275,7 +288,7 @@ module.exports = {
     )
 
     if (tooSmallField || tooLargeField) {
-      return res.status(422).json({
+      return next({
         code: 422,
         reason: 'ValidationError',
         message: tooSmallField
