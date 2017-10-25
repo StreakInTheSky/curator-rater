@@ -1,5 +1,4 @@
 const User = require('../models/user')
-const utils = require('../utilities/user_utilities')
 
 module.exports = {
   create(req, res, next) {
@@ -218,23 +217,83 @@ module.exports = {
       .catch(error => next(error))
   },
   update(req, res, next) {
-    let toUpdate = {}
+    const updatableFields = ['username', 'email', 'password']
 
-    if (!req.body) {
-      return res.status(400).send('No request body')
+    const nonStringField = updatableFields.find(
+      field => field in req.body && typeof req.body[field] !== 'string'
+    )
+
+    if (nonStringField) {
+      return res.status(422).json({
+        code: 422,
+        reason: 'ValidationError',
+        message: 'Incorrect field type: expected string',
+        location: nonStringField
+      })
     }
 
-    const updatableFields = ['username', 'email', 'password', 'passwordConfirm']
+    const explicityTrimmedFields = ['email', 'password']
+    const nonTrimmedField = explicityTrimmedFields.find(
+      field => field in req.body && req.body[field].trim() !== req.body[field]
+    )
+
+    if (nonTrimmedField) {
+      return res.status(422).json({
+        code: 422,
+        reason: 'ValidationError',
+        message: 'Cannot start or end with whitespace',
+        location: nonTrimmedField
+      })
+    }
+
+    const sizedFields = {
+      username: {
+        min: 1
+      },
+      email: {
+        min: 1
+      },
+      password: {
+        min: 8,
+        // bcrypt truncates after 72 characters, so let's not give the illusion
+        // of security by storing extra (unused) info
+        max: 72
+      }
+    }
+
+    const tooSmallField = Object.keys(sizedFields).find(
+       field =>
+           field in req.body &&
+           'min' in sizedFields[field] &&
+           req.body[field].trim().length < sizedFields[field].min
+    )
+    const tooLargeField = Object.keys(sizedFields).find(
+       field =>
+           field in req.body &&
+           'max' in sizedFields[field] &&
+           req.body[field].trim().length > sizedFields[field].max
+    )
+
+    if (tooSmallField || tooLargeField) {
+      return res.status(422).json({
+        code: 422,
+        reason: 'ValidationError',
+        message: tooSmallField
+           ? `Must be at least ${sizedFields[tooSmallField]
+                 .min} characters long`
+           : `Must be at most ${sizedFields[tooLargeField]
+                 .max} characters long`,
+        location: tooSmallField || tooLargeField
+      })
+    }
+
+    let toUpdate = {}
 
     updatableFields.forEach(field => {
       if (field in req.body) {
         toUpdate[field] = req.body[field]
       }
     })
-
-    if (!utils.validateUser(req, res)) {
-      return next('Validation error')
-    }
 
     return User
       .findByIdAndUpdate(req.params.userId, toUpdate)

@@ -10,15 +10,13 @@ chai.use(chaiHttp)
 const userOne = {
   username: 'newguy',
   email: 'emailguy@email.com',
-  password: 'abcdef12',
-  passwordConfirm: 'abcdef12'
+  password: 'abcdef12'
 }
 
 const userTwo = {
   username: 'otherguy',
   email: 'otheremail@email.com',
-  password: 'password1',
-  passwordConfirm: 'password1'
+  password: 'password1'
 }
 
 describe('User controller', () => {
@@ -64,7 +62,7 @@ describe('User controller', () => {
     User.count().then(count => {
       chai.request(app)
         .post('/api/user')
-        .send({ data: userTwo })
+        .send(userTwo)
         .end((err) => {
           if (err) { return done(err) }
           return User.count()
