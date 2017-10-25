@@ -90,7 +90,7 @@ module.exports = {
         code: 422,
         reason: 'ValidationError',
         message: 'Not a valid email',
-        location: "email"
+        location: 'email'
       })
     }
 
