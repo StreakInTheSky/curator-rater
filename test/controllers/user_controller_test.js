@@ -42,7 +42,7 @@ describe('User controller', () => {
 
         return User.count()
           .then(count => {
-            res.body.should.have.length.of(count)
+            res.body.should.have.lengthOf(count)
             done()
           })
           .catch(error => done(error))
