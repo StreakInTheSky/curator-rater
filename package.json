@@ -15,10 +15,9 @@
     "babel-eslint": "^7.2.3",
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.17.1",
-    "chai": "^3.5.0",
-    "chai-http": "^3.0.0",
     "cheerio": "^1.0.0-rc.1",
     "cors": "^2.8.3",
+    "dotenv": "^4.0.0",
     "eslint": "^2.11.1",
     "eslint-config-airbnb": "^9.0.1",
     "eslint-plugin-import": "^1.8.1",
@@ -26,9 +25,9 @@
     "eslint-plugin-mocha": "^4.9.0",
     "eslint-plugin-react": "^5.1.1",
     "express": "^4.15.2",
-    "mocha": "^3.3.0",
-    "mongoose": "^4.11.1",
-    "morgan": "^1.8.2",
+    "jsonwebtoken": "^7.4.3",
+    "mongoose": "^4.12.4",
+    "morgan": "^1.9.0",
     "node-horseman": "^3.3.0",
     "nodemon": "^1.11.0",
     "passport": "^0.3.2",
@@ -36,5 +35,10 @@
     "passport-jwt": "^2.2.1",
     "phantomjs-prebuilt": "^2.1.14",
     "request": "^2.81.0"
+  },
+  "devDependencies": {
+    "chai": "^4.0.1",
+    "chai-http": "^3.0.0",
+    "mocha": "^3.4.2"
   }
 }
