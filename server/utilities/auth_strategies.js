@@ -16,10 +16,9 @@ const basicStrategy = new BasicStrategy((username, password, callback) => {
         return Promise.reject({ reason: 'LoginError', message: 'Incorrect email or password' })
       }
       return user.validatePassword(password)
-  })
+    })
   .then(isValid => {
     if (!isValid) {
-      console.log("password not valid")
       return Promise.reject({ reason: 'LoginError', message: 'Incorrect email or password' })
     }
     return callback(null, user)
