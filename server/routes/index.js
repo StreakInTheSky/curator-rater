@@ -25,7 +25,7 @@ module.exports = (app) => {
   app.get(`${apiUser}/:username`, UserController.getOne)
   app.get(`${apiUser}/:userId`, UserController.getOneById)
   app.post(apiUser, UserController.create)
-  app.post(`${apiUser}/follow`,  UserController.follow)
+  app.post(`${apiUser}/follow`, UserController.follow)
   app.post(`${apiUser}/unfollow`, UserController.unfollow)
   app.put(`${apiUser}/:userId`, UserController.update)
   app.delete(`${apiUser}/:userId`, UserController.delete)
