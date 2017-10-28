@@ -1,5 +1,4 @@
 const User = require('../models/user')
-const { validator } = require('../utilities/validator')
 
 module.exports = {
   create(req, res, next) {
