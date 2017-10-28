@@ -5,7 +5,7 @@ const config = require('../config')
 
 const createAuthToken = user => {
   return jwt.sign({
-    user
+    user: { username: user.username }
   }, config.JWT_SECRET, {
     subject: user.username,
     expiresIn: config.JWT_EXPIRY,
