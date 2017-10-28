@@ -1,7 +1,9 @@
 const User = require('../models/user')
+const { validator } = require('../utilities/validator')
 
 module.exports = {
   create(req, res, next) {
+
     // Validates req data
     const requiredFields = ['username', 'email', 'password']
     const missingField = requiredFields.find(field => !(field in req.body))

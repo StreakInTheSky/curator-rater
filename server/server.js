@@ -1,8 +1,16 @@
+require('dotenv').config()
 const express = require('express')
 const mongoose = require('mongoose')
-const { PORT, DATABASE_URL } = require('./config')
-const cors = require('cors')
+const passport = require('passport')
+const morgan = require('morgan')
 const bodyParser = require('body-parser')
+const cors = require('cors')
+const { PORT, DATABASE_URL } = require('./config')
+
+const { basicStrategy, jwtStrategy } = require('./utilities/auth_strategies')
+
+
+
 const app = express()
 const routes = require('./routes')
 mongoose.Promise = global.Promise
@@ -13,6 +21,10 @@ let server
 // Middleware
 app.use(bodyParser.json())
 app.use(cors())
+app.use(passport.initialize())
+passport.use(basicStrategy)
+passport.use(jwtStrategy)
+app.use(morgan('common'))
 
 // Routes
 routes(app)
