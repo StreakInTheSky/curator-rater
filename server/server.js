@@ -32,7 +32,7 @@ routes(app)
 // Middleware to handle error responses
 app.use((err, req, res, next) => {
   console.error('Error:', err)
-  res.status(err.code).json({ error: err.message })
+  res.status(err.code).json({ error: err })
   next()
 })
 
