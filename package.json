@@ -26,7 +26,7 @@
     "eslint-plugin-react": "^5.1.1",
     "express": "^4.15.2",
     "jsonwebtoken": "^7.4.3",
-    "mongoose": "^4.12.4",
+    "mongoose": "^4.12.5",
     "morgan": "^1.9.0",
     "node-horseman": "^3.3.0",
     "nodemon": "^1.11.0",
