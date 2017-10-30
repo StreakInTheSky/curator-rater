@@ -4,7 +4,7 @@ const mongoose = require('mongoose')
 const passport = require('passport')
 const morgan = require('morgan')
 const bodyParser = require('body-parser')
-const cors = require('cors')
+// const cors = require('cors')
 const { PORT, DATABASE_URL } = require('./config')
 
 const { basicStrategy, jwtStrategy } = require('./utilities/auth_strategies')
@@ -18,9 +18,20 @@ mongoose.Promise = global.Promise
 // Listen
 let server
 
+// Cors
+app.use(function(req, res, next) {
+  res.header('Access-Control-Allow-Origin', '*')
+  res.header('Access-Control-Allow-Headers', 'Content-Type,Authorization')
+  res.header('Access-Control-Allow-Methods', 'GET,POST,PUT,PATCH,DELETE')
+  if (req.method === 'OPTIONS') {
+    return res.sendStatus(204)
+  }
+  next()
+})
+
 // Middleware
 app.use(bodyParser.json())
-app.use(cors())
+// app.use(cors())
 app.use(passport.initialize())
 passport.use(basicStrategy)
 passport.use(jwtStrategy)
@@ -32,7 +43,7 @@ routes(app)
 // Middleware to handle error responses
 app.use((err, req, res, next) => {
   console.error('Error:', err)
-  res.status(err.code).json({ error: err })
+  res.status(err.code).json(err)
   next()
 })
 
