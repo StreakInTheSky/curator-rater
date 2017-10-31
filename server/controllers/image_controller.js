@@ -6,7 +6,7 @@ module.exports = {
     const requiredFields = ['path', 'user', 'gallery']
 
     requiredFields.forEach(field => {
-      if (!(field in req.body.data)) {
+      if (!(field in req.body)) {
         return next({
           code: 422,
           reason: 'ValidationError',
@@ -24,7 +24,7 @@ module.exports = {
       })
     }
 
-    const { path, source, user, gallery } = req.body.data
+    const { path, source, user, gallery } = req.body
 
     return Image
       .create({

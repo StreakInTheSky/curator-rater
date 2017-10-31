@@ -3,7 +3,7 @@ const utils = require('../utilities/gallery_utilities')
 
 module.exports = {
   create: async (req, res, next) => {
-    const requiredFields = ['user', 'title', 'description']
+    const requiredFields = ['user', 'title']
 
     requiredFields.forEach(field => {
       if (!(field in req.body.data)) {

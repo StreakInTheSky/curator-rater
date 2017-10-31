@@ -52,8 +52,12 @@ const validateImage = (req, res) => {
   }
 
   if (toVerify.gallery) {
-    if (typeof toVerify.tags !== 'string') {
-      res.status(422).send('Incorrect field type: tags')
+    if (typeof toVerify.gallery !== 'string') {
+      res.status(422).send('Incorrect field type: gallery')
+      return false
+    }
+    if (toVerify.gallery === '') {
+      res.status(422).send('Incorrect field length: gallery')
       return false
     }
   }
