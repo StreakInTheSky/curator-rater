@@ -23,7 +23,7 @@ module.exports = (app) => {
   const apiUser = '/api/user'
   app.get(apiUser, UserController.getByQuery)
   app.get(`${apiUser}/:username`, UserController.getOne)
-  app.get(`${apiUser}/:userId`, UserController.getOneById)
+  app.get(`${apiUser}/id/:userId`, UserController.getOneById)
   app.post(apiUser, UserController.create)
   app.post(`${apiUser}/follow`, UserController.follow)
   app.post(`${apiUser}/unfollow`, UserController.unfollow)

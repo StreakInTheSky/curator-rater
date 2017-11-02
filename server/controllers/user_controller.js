@@ -178,9 +178,19 @@ module.exports = {
   getOneById(req, res, next) {
     if (req.params.userId) {
       return User
-        .findOne({ username: req.params.username })
+        .findOne({ _id: req.params.userId })
         .populate('followers', ['username'])
         .populate('following', ['username'])
+        .populate({
+          path: 'galleries',
+          populate: {
+            path: 'images',
+            model: 'image'
+          },
+          options: {
+            sort: { created_at: -1 },
+          }
+        })
         .then(user => res.status(200).json(user.apiRepr()))
         .catch(error => next(error))
     }
@@ -207,7 +217,7 @@ module.exports = {
       User.findByIdAndUpdate(followerId, { $addToSet: { following: followingId } }, { new: true }),
       User.findByIdAndUpdate(followingId, { $addToSet: { followers: followerId } }, { new: true })
     ])
-      .then(users => res.json(users.map(user => user.apiRepr())))
+      .then(users => res.status(200).send(`${users[0].username} is now following ${users[1].username}`))
       .catch(error => next(error))
   },
   unfollow(req, res, next) {
@@ -231,7 +241,7 @@ module.exports = {
       User.findByIdAndUpdate(followerId, { $pull: { following: followingId } }, { new: true }),
       User.findByIdAndUpdate(followingId, { $pull: { followers: followerId } }, { new: true })
     ])
-      .then(users => res.json(users.map(user => user.apiRepr())))
+      .then(users => res.status(200).send(`${users[0].username} has unfollowed ${users[1].username}`))
       .catch(error => next(error))
   },
   update(req, res, next) {
