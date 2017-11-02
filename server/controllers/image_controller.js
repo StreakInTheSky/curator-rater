@@ -32,7 +32,8 @@ module.exports = {
         source,
         user: [user],
         gallery,
-        points: 500
+        points: 500,
+        created_at: Date.now()
       })
       .then(() => {
         return res.status(201).send('Image upload successful')

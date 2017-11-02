@@ -132,7 +132,8 @@ module.exports = {
         return User.create({
           username,
           email,
-          password: hash
+          password: hash,
+          created_at: Date.now()
         })
       })
       .then(user => {
@@ -151,7 +152,7 @@ module.exports = {
     return User
       .find(req.params)
       .then(users => res.status(200).json(users.map(user => user.apiRepr())))
-      .catch(next)
+      .catch(error => next(error))
   },
   getOne(req, res, next) {
     if (req.params.username) {
@@ -164,10 +165,13 @@ module.exports = {
           populate: {
             path: 'images',
             model: 'image'
+          },
+          options: {
+            sort: { created_at: -1 },
           }
         })
         .then(user => res.status(200).json(user.apiRepr()))
-        .catch(next)
+        .catch(error => next(error))
     }
     return next(new Error('please supply username'))
   },
@@ -178,7 +182,7 @@ module.exports = {
         .populate('followers', ['username'])
         .populate('following', ['username'])
         .then(user => res.status(200).json(user.apiRepr()))
-        .catch(next)
+        .catch(error => next(error))
     }
     return next(new Error('please supply username'))
   },
@@ -312,7 +316,7 @@ module.exports = {
     return User
       .findByIdAndUpdate(req.params.userId, toUpdate)
       .then(user => res.status(201).json(user.apiRepr()))
-      .catch(next)
+      .catch(error => next(error))
   },
   delete(req, res, next) {
     User
@@ -321,6 +325,6 @@ module.exports = {
         return user.remove()
       })
       .then(() => res.status(204).end())
-      .catch(next)
+      .catch(error => next(error))
   }
 }

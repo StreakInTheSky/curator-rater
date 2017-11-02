@@ -39,12 +39,13 @@ module.exports = {
       .create({
         user,
         title,
-        description
+        description,
+        created_at: Date.now()
       })
       .then(gallery => {
         res.status(201).json(gallery.apiRepr())
       })
-      .catch(next)
+      .catch(err => next(err))
   },
   getByQuery(req, res, next) {
     return Gallery
@@ -52,14 +53,16 @@ module.exports = {
       .populate('user', ['username'])
       .populate('images')
       .then(galleries => res.status(200).json(galleries.map(gallery => gallery.apiRepr())))
-      .catch(next)
+      .catch(err => next(err))
   },
   getOne(req, res, next) {
     if (req.params.galleryId) {
       return Gallery
-        .findOne({ id: req.params.galleryId })
+        .findOne({ _id: req.params.galleryId })
+        .populate('user', 'username')
+        .populate('images')
         .then(gallery => res.status(200).json(gallery.apiRepr()))
-        .catch(next)
+        .catch(err => next(err))
     }
     return next({
       code: 422,
@@ -89,7 +92,7 @@ module.exports = {
     return Gallery
       .findByIdAndUpdate(req.params.galleryId, toUpdate)
       .then(gallery => res.status(201).json(gallery.apiRepr()))
-      .catch(next)
+      .catch(err => next(err))
   },
   delete(req, res, next) {
     Gallery
@@ -98,6 +101,6 @@ module.exports = {
         return gallery.remove()
       })
       .then(() => res.status(204).end())
-      .catch(next)
+      .catch(err => next(err))
   }
 }
