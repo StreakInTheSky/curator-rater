@@ -1,4 +1,5 @@
 const User = require('../models/user')
+const { login } = require('./auth_controller')
 
 module.exports = {
   create(req, res, next) {
@@ -217,7 +218,7 @@ module.exports = {
       User.findByIdAndUpdate(followerId, { $addToSet: { following: followingId } }, { new: true }),
       User.findByIdAndUpdate(followingId, { $addToSet: { followers: followerId } }, { new: true })
     ])
-      .then(users => res.status(200).send(`${users[0].username} is now following ${users[1].username}`))
+      .then(users => res.status(200).json(users[0].apiRepr()))
       .catch(error => next(error))
   },
   unfollow(req, res, next) {
@@ -241,7 +242,7 @@ module.exports = {
       User.findByIdAndUpdate(followerId, { $pull: { following: followingId } }, { new: true }),
       User.findByIdAndUpdate(followingId, { $pull: { followers: followerId } }, { new: true })
     ])
-      .then(users => res.status(200).send(`${users[0].username} has unfollowed ${users[1].username}`))
+      .then(users => res.status(200).json(users[0].apiRepr()))
       .catch(error => next(error))
   },
   update(req, res, next) {
