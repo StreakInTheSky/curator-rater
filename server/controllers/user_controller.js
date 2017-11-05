@@ -200,21 +200,20 @@ module.exports = {
   follow(req, res, next) {
     const requiredFields = ['followerId', 'followingId']
 
-    requiredFields.forEach(field => {
-      if (!(field in req.body)) {
-        return next({
-          code: 422,
-          reason: 'ValidationError',
-          message: `Missing \`${field}\` in request body`,
-          location: field
-        })
-      }
-      return null
-    })
+    const missingField = requiredFields.find(field => !(field in req.body))
+
+    if (missingField) {
+      return next({
+        code: 422,
+        reason: 'ValidationError',
+        message: 'Missing field',
+        location: missingField
+      })
+    }
 
     const { followerId, followingId } = req.body
 
-    Promise.all([
+    return Promise.all([
       User.findByIdAndUpdate(followerId, { $addToSet: { following: followingId } }, { new: true }),
       User.findByIdAndUpdate(followingId, { $addToSet: { followers: followerId } }, { new: true })
     ])
@@ -224,21 +223,20 @@ module.exports = {
   unfollow(req, res, next) {
     const requiredFields = ['followerId', 'followingId']
 
-    requiredFields.forEach(field => {
-      if (!(field in req.body)) {
-        return next({
-          code: 422,
-          reason: 'ValidationError',
-          message: `Missing \`${field}\` in request body`,
-          location: field
-        })
-      }
-      return null
-    })
+    const missingField = requiredFields.find(field => !(field in req.body))
+
+    if (missingField) {
+      return next({
+        code: 422,
+        reason: 'ValidationError',
+        message: 'Missing field',
+        location: missingField
+      })
+    }
 
     const { followerId, followingId } = req.body
 
-    Promise.all([
+    return Promise.all([
       User.findByIdAndUpdate(followerId, { $pull: { following: followingId } }, { new: true }),
       User.findByIdAndUpdate(followingId, { $pull: { followers: followerId } }, { new: true })
     ])
