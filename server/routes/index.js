@@ -41,7 +41,7 @@ module.exports = (app) => {
   app.get(`${apiGallery}/:galleryId`, GalleryController.getOne)
   app.post(apiGallery, GalleryController.create)
   app.post(`${apiGallery}/favorite`, GalleryController.addFavorite)
-  // app.post(`${apiGallery}/unfavorite`, GalleryController.removeFavorite)
+  app.post(`${apiGallery}/unfavorite`, GalleryController.removeFavorite)
   app.put(`${apiGallery}/:galleryId`, GalleryController.update)
   app.delete(`${apiGallery}/:galleryId`, GalleryController.delete)
 
