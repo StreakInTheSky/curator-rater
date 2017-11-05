@@ -1,4 +1,5 @@
 const Gallery = require('../models/gallery')
+const User = require('../models/user')
 const utils = require('../utilities/gallery_utilities')
 
 module.exports = {
@@ -70,6 +71,47 @@ module.exports = {
       message: 'No gallery id supplied',
       location: 'params'
     })
+  },
+  addFavorite(req, res, next) {
+    const requiredFields = ['galleryId', 'userId']
+
+    const missingField = requiredFields.find(field => !(field in req.body))
+
+    if (missingField) {
+      return next({
+        code: 422,
+        reason: 'ValidationError',
+        message: 'Missing field',
+        location: missingField
+      })
+    }
+
+    const { galleryId, userId } = req.body
+
+    return Gallery.findByIdAndUpdate(
+        galleryId,
+        { $push: { favorited_by: userId } },
+        { new: true }
+      )
+      .then((updatedGallery) => {
+        return User.findByIdAndUpdate(
+          userId,
+          { $push: { favorites: galleryId } },
+          { new: true }
+        )
+        .then(user => Promise.resolve({ updatedGallery, updatedUser: user }))
+        .catch(err => Promise.reject(err))
+      })
+      .then(results => {
+        console.log('Updated gallery: ', results.updatedGallery.apiRepr())
+        console.log('Updated user:', results.updatedUser.apiRepr())
+        return results
+      })
+      .then(results => res.status(200).json({
+        updatedGallery: results.updatedGallery.apiRepr(),
+        updatedUser: results.updatedUser.apiRepr()
+      }))
+      .catch(error => next(error))
   },
   update(req, res, next) {
     let toUpdate = {}
