@@ -159,18 +159,27 @@ module.exports = {
     if (req.params.username) {
       return User
         .findOne({ username: req.params.username })
-        .populate('followers', ['username'])
-        .populate('following', ['username'])
-        .populate({
-          path: 'galleries',
-          populate: {
-            path: 'images',
-            model: 'image'
+        .populate([
+          { path: 'followers', select: ['username'] },
+          { path: 'following', select: ['username'] },
+          {
+            path: 'galleries',
+            options: {
+              sort: { created_at: -1 }
+            },
+            populate: [
+              { path: 'images' },
+              { path: 'user', select: 'username' }
+            ]
           },
-          options: {
-            sort: { created_at: -1 },
+          {
+            path: 'favorites',
+            populate: [
+              { path: 'images' },
+              { path: 'user', select: 'username' }
+            ]
           }
-        })
+        ])
         .then(user => res.status(200).json(user.apiRepr()))
         .catch(error => next(error))
     }
@@ -180,18 +189,27 @@ module.exports = {
     if (req.params.userId) {
       return User
         .findOne({ _id: req.params.userId })
-        .populate('followers', ['username'])
-        .populate('following', ['username'])
-        .populate({
-          path: 'galleries',
-          populate: {
-            path: 'images',
-            model: 'image'
+        .populate([
+          { path: 'followers', select: ['username'] },
+          { path: 'following', select: ['username'] },
+          {
+            path: 'galleries',
+            options: {
+              sort: { created_at: -1 }
+            },
+            populate: [
+              { path: 'images' },
+              { path: 'user', select: 'username' }
+            ]
           },
-          options: {
-            sort: { created_at: -1 },
+          {
+            path: 'favorites',
+            populate: [
+              { path: 'images' },
+              { path: 'user', select: 'username' }
+            ]
           }
-        })
+        ])
         .then(user => res.status(200).json(user.apiRepr()))
         .catch(error => next(error))
     }
