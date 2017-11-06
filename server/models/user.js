@@ -24,7 +24,8 @@ UserSchema.methods.apiRepr = function () {
     galleries: this.galleries,
     followers: this.followers,
     following: this.following,
-    favorites: this.favorites
+    favorites: this.favorites,
+    upvoted: this.upvoted
   }
 }
 
