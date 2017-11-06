@@ -2,3 +2,10 @@ language: node_js
 node_js: node
 services:
 - mongodb
+deploy:
+  provider: heroku
+  api_key:
+    secure: NGU5OMcAxLIqtbpOv6ld3fr6ZWTCC28VyonIkW+9jtueIszqQEZXclCJZPe9V+I1WHqhU4zbFFPuZIRvRlJAvltzcCsRZ1on6L6FpprRUHbTCHEGgnr18iPIayMWQiIpwmU8yYdZqOTIjfvrSbvQuLQ9hjiYdHARoMhg3dYhAMUy67Tjtlz3+XU+shZPRQCqklgOHXCQ3dl9oACHTaQkjF+JTnC1qqBp2dD2niiW5FB7wxCG9Krsp9O3UOeCBKGdAiwaEE2Z4wGW8RD5CBGVhVrVbB+7yUyzSWzsuiEuHjfRHJ6u40ZY2akycLDv9BJGOEH59q6a+knunjSXxDJSawoG6UUMoaF0BGUUC+4uqEQ4x20jHTrUGovFTdoat+Xgd/ep3k2BheUooQ55aXvj+TgB+cnMdDfQc82Si2KRTUnedhjt7cdqb6d8OJFLH0GtTaGIribLXQScx6dpVSV4uQ3IbVrCJe0+2ZR4c2XJd0FrVUd14novADKbSYZmDZPYZcbLeGfiA+EwrCm0pJizaxCHfbwW9zOmFhVSWlk7gY0gUKPCHbIUf6boNH0CHsOeVOVMXBJ3EqfJF56AZ6+opo5QMZtOW8PcGbp0ugHcg9Ob6h+dHt52KJ6sY4rxALkNKEeW/8eLZIQhvOhEhGdfAyOBLETFaeNUXL4gtLrj7+s=
+  app: floating-bastion-78783
+  on:
+    repo: StreakInTheSky/curator-rater
