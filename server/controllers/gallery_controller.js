@@ -53,6 +53,7 @@ module.exports = {
       .find(req.params)
       .populate('user', ['username'])
       .populate('images')
+      .sort({ created_at: -1 })
       .then(galleries => res.status(200).json(galleries.map(gallery => gallery.apiRepr())))
       .catch(err => next(err))
   },
