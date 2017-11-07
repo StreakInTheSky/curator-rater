@@ -46,7 +46,8 @@ module.exports = {
 
     const sizedFields = {
       username: {
-        min: 1
+        min: 1,
+        max: 18
       },
       email: {
         min: 1
