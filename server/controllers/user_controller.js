@@ -99,6 +99,17 @@ module.exports = {
 
     username = username.trim()
 
+    const usernameRegX = new RegExp('[^a-z0-9]')
+
+    if (usernameRegX.test(username)) {
+      return next({
+        code: 422,
+        reason: 'ValidationError',
+        message: 'Not a valid username',
+        location: 'username'
+      })
+    }
+
     // check for existing user
     return User
       .find({ email })
