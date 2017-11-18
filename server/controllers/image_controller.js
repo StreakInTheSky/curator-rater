@@ -40,7 +40,6 @@ module.exports = {
       .catch(next)
   },
   vote(req, res, next) {
-    console.log('received', req.body)
     const requiredFields = ['imageId', 'userId']
     const missingField = requiredFields.find(field => !(field in req.body))
 
@@ -57,7 +56,7 @@ module.exports = {
     return Image
       .findByIdAndUpdate(
         imageId,
-        { $push: { voted_by: userId } }
+        { $push: { upvoted_by: userId } }
       )
       .then(() => {
         return User.findByIdAndUpdate(
