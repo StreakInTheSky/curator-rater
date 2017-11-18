@@ -1,4 +1,4 @@
-/*eslint-disable func-names*/
+/* eslint-disable func-names */
 
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema
