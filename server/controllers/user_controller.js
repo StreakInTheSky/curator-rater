@@ -244,10 +244,53 @@ module.exports = {
     const { followerId, followingId } = req.body
 
     return Promise.all([
-      User.findByIdAndUpdate(followerId, { $addToSet: { following: followingId } }, { new: true }),
+      User.findByIdAndUpdate(followerId, { $addToSet: { following: followingId } }, { new: true })
+        .populate([
+          { path: 'followers', select: ['username'] },
+          { path: 'following', select: ['username'] },
+          {
+            path: 'galleries',
+            options: {
+              sort: { created_at: -1 }
+            },
+            populate: [
+              { path: 'images' },
+              { path: 'user', select: 'username' }
+            ]
+          },
+          {
+            path: 'favorites',
+            populate: [
+              { path: 'images' },
+              { path: 'user', select: 'username' }
+            ]
+          }
+        ]
+      ),
       User.findByIdAndUpdate(followingId, { $addToSet: { followers: followerId } }, { new: true })
-    ])
-      .then(users => res.status(200).json(users[0].apiRepr()))
+        .populate([
+          { path: 'followers', select: ['username'] },
+          { path: 'following', select: ['username'] },
+          {
+            path: 'galleries',
+            options: {
+              sort: { created_at: -1 }
+            },
+            populate: [
+              { path: 'images' },
+              { path: 'user', select: 'username' }
+            ]
+          },
+          {
+            path: 'favorites',
+            populate: [
+              { path: 'images' },
+              { path: 'user', select: 'username' }
+            ]
+          }
+        ])
+      ])
+      .then(users => res.status(200).json({ followingUser: users[0].apiRepr(), followedUser: users[1].apiRepr() }))
       .catch(error => next(error))
   },
   unfollow(req, res, next) {
@@ -267,10 +310,53 @@ module.exports = {
     const { followerId, followingId } = req.body
 
     return Promise.all([
-      User.findByIdAndUpdate(followerId, { $pull: { following: followingId } }, { new: true }),
+      User.findByIdAndUpdate(followerId, { $pull: { following: followingId } }, { new: true })
+      .populate([
+        { path: 'followers', select: ['username'] },
+        { path: 'following', select: ['username'] },
+        {
+          path: 'galleries',
+          options: {
+            sort: { created_at: -1 }
+          },
+          populate: [
+            { path: 'images' },
+            { path: 'user', select: 'username' }
+          ]
+        },
+        {
+          path: 'favorites',
+          populate: [
+            { path: 'images' },
+            { path: 'user', select: 'username' }
+          ]
+        }
+      ]
+    ),
       User.findByIdAndUpdate(followingId, { $pull: { followers: followerId } }, { new: true })
+      .populate([
+        { path: 'followers', select: ['username'] },
+        { path: 'following', select: ['username'] },
+        {
+          path: 'galleries',
+          options: {
+            sort: { created_at: -1 }
+          },
+          populate: [
+            { path: 'images' },
+            { path: 'user', select: 'username' }
+          ]
+        },
+        {
+          path: 'favorites',
+          populate: [
+            { path: 'images' },
+            { path: 'user', select: 'username' }
+          ]
+        }
+      ])
     ])
-      .then(users => res.status(200).json(users[0].apiRepr()))
+      .then(users => res.status(200).json({ unfollowingUser: users[0].apiRepr(), unfollowedUser: users[1].apiRepr() }))
       .catch(error => next(error))
   },
   update(req, res, next) {
