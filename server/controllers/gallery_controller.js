@@ -139,11 +139,6 @@ module.exports = {
         .then(user => Promise.resolve({ updatedGallery, updatedUser: user }))
         .catch(err => Promise.reject(err))
       })
-      .then(results => {
-        console.log('Updated gallery: ', results.updatedGallery.apiRepr())
-        console.log('Updated user:', results.updatedUser.apiRepr())
-        return results
-      })
       .then(results => res.status(200).json({
         updatedGallery: results.updatedGallery.apiRepr(),
         updatedUser: results.updatedUser.apiRepr()
