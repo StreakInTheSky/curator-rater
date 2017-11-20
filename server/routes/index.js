@@ -49,6 +49,7 @@ module.exports = (app) => {
   const apiImage = '/api/image'
   app.post(`${apiImage}/`, ImageController.create)
   app.post(`${apiImage}/vote`, ImageController.vote)
+  app.post(`${apiImage}/unvote`, ImageController.unvote)
   // app.get(apiImage, ImageController.get)
   // app.get(`${apiImage}/:imageId`, ImageController.getOne)
   // app.post(`${apiImage}/:imageId/vote`, ImageController.vote)

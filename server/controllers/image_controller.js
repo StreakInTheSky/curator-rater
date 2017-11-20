@@ -69,5 +69,36 @@ module.exports = {
       })
       .then(user => res.status(200).json(user.apiRepr()))
       .catch(err => next(err))
+  },
+  unvote(req, res, next) {
+    const requiredFields = ['imageId', 'userId']
+    const missingField = requiredFields.find(field => !(field in req.body))
+
+    if (missingField) {
+      return next({
+        code: 422,
+        reason: 'ValidationError',
+        message: 'Missing field',
+        location: missingField
+      })
+    }
+    const { imageId, userId } = req.body
+
+    return Image
+      .findByIdAndUpdate(
+        imageId,
+        { $pull: { upvoted_by: userId } }
+      )
+      .then(() => {
+        return User.findByIdAndUpdate(
+          userId,
+          { $pull: { upvoted: imageId } },
+          { new: true }
+        )
+        .then(user => Promise.resolve(user))
+        .catch(err => Promise.reject(err))
+      })
+      .then(user => res.status(200).json(user.apiRepr()))
+      .catch(err => next(err))
   }
 }
