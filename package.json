@@ -28,7 +28,7 @@
     "eslint-plugin-mocha": "^4.12.1",
     "eslint-plugin-react": "^5.1.1",
     "express": "^4.15.2",
-    "jsonwebtoken": "^7.4.3",
+    "jsonwebtoken": "^9.0.0",
     "mongoose": "^4.13.11",
     "morgan": "^1.9.0",
     "node-horseman": "^3.3.0",
